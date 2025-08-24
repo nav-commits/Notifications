@@ -5,16 +5,17 @@ interface NotificationData {
   notifications: Notification[];
   notificationsUnread: number;
   onMarkAllRead: () => void;
+  markItemAllRead: (id: number) => void;
 }
 
 const Card: React.FC<NotificationData> = ({
   notifications,
   notificationsUnread,
   onMarkAllRead,
+  markItemAllRead,
 }) => {
   return (
     <div className="bg-white rounded-xl p-10 max-w-3xl mx-auto">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-semibold text-[hsl(219,85%,26%)]">
@@ -24,7 +25,6 @@ const Card: React.FC<NotificationData> = ({
             {notificationsUnread}
           </div>
         </div>
-
         <button
           className="text-sm text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
           onClick={onMarkAllRead}
@@ -32,7 +32,6 @@ const Card: React.FC<NotificationData> = ({
           Mark all as read
         </button>
       </div>
-
       {/* Notifications list */}
       <div className="flex flex-col gap-2">
         {notifications.map((notif) => (
@@ -41,6 +40,7 @@ const Card: React.FC<NotificationData> = ({
             className={`flex items-start gap-4 py-3 cursor-pointer px-2 rounded-lg transition-colors ${
               notif.unread ? "bg-gray-50" : ""
             }`}
+            onClick={() => markItemAllRead(notif.id)}
           >
             <div className="flex-shrink-0">
               <Image
@@ -52,10 +52,15 @@ const Card: React.FC<NotificationData> = ({
               />
             </div>
             <div className="flex-1 flex flex-col">
-              <p className="text-gray-700">
-                <span className="font-semibold">{notif.name}</span>{" "}
-                {notif.title}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-gray-700">
+                  <span className="font-semibold">{notif.name}</span>{" "}
+                  {notif.title}
+                </p>
+                {notif.unread ? (
+                  <span className="inline-block w-2 h-2 bg-red-300 rounded-full"></span>
+                ) : null}
+              </div>
               <span className="text-xs text-gray-400 mt-1">
                 {notif.timeAgo}
               </span>
